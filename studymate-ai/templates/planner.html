@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}AI Study Planner – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">🤖 Generate My Smart Study Plan</h2>
+<p class="text-secondary">Topics are ranked by exam urgency, difficulty, status and progress, then fitted into your daily study window.</p>
+
+<div class="card mb-4"><div class="card-body p-4">
+  <form id="plannerForm" class="row g-3 align-items-end">
+    <div class="col-md-4"><label class="form-label">Select Subject</label>
+      <select name="subject_id" id="subject_id" class="form-select">
+        <option value="all">All Subjects</option>
+        {% for s in subjects %}<option value="{{ s._id }}" data-exam="{{ s.exam_date }}">{{ s.name }}</option>{% endfor %}
+      </select></div>
+    <div class="col-md-4"><label class="form-label">Exam Date <span class="text-secondary">(optional, one subject)</span></label>
+      <input type="date" name="exam_date" id="exam_date" class="form-control" disabled></div>
+    <div class="col-md-4"><label class="form-label">Available Study Hours Per Day</label>
+      <input type="number" name="hours" class="form-control" min="0.5" max="16" step="0.5" value="{{ profile.get('daily_hours', 4) }}" required></div>
+    <div class="col-md-4"><label class="form-label">Preferred Study Start Time</label>
+      <input type="time" name="start_time" class="form-control" value="{{ profile.get('preferred_start_time', '08:00') }}" required></div>
+    <div class="col-md-4"><label class="form-label">Preferred Study End Time</label>
+      <input type="time" name="end_time" class="form-control" value="20:00" required></div>
+    <div class="col-md-4 d-grid"><button class="btn btn-brand btn-lg" id="generateBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate AI Study Plan</button></div>
+  </form>
+</div></div>
+
+<div id="plannerAlert"></div>
+
+<div id="resultWrap" class="d-none">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h4 class="fw-bold mb-0">Your Study Timetable</h4>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-brand" id="regenBtn"><i class="fa-solid fa-rotate"></i> Regenerate Plan</button>
+      <button class="btn btn-brand" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Save Plan</button>
+    </div>
+  </div>
+  <div id="timetable"></div>
+  <h4 class="fw-bold mt-4 mb-3">Smart Recommendations</h4>
+  <div id="recs" class="row g-3"></div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/planner.js') }}"></script>{% endblock %}

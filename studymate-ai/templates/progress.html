@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Progress – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">Progress</h2>
+<div class="card mb-4"><div class="card-body p-4">
+  <div class="d-flex justify-content-between mb-2"><h5 class="fw-bold mb-0">Overall Completion</h5><span class="fw-bold">{{ overall }}%</span></div>
+  <div class="progress progress-lg"><div class="progress-bar" style="width: {{ overall }}%"></div></div>
+</div></div>
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-5"><div class="card h-100"><div class="card-body p-4">
+    <h5 class="fw-bold mb-3">Subject Progress</h5>
+    {% for s in subjects %}
+    <div class="mb-3">
+      <div class="d-flex justify-content-between small"><span class="fw-semibold">{{ s.name }}</span><span>{{ s.percent }}%</span></div>
+      <div class="progress"><div class="progress-bar" style="width: {{ s.percent }}%"></div></div>
+    </div>
+    {% else %}<div class="text-secondary">Add subjects and topics to see progress.</div>{% endfor %}
+  </div></div></div>
+  <div class="col-lg-7"><div class="card h-100"><div class="card-body p-4">
+    <h5 class="fw-bold mb-3">Weekly Study Hours</h5><div class="chart-box"><canvas id="weeklyChart"></canvas></div>
+  </div></div></div>
+</div>
+<div class="row g-4">
+  <div class="col-md-6"><div class="card h-100"><div class="card-body p-4">
+    <h5 class="fw-bold mb-3">Subject Progress Chart</h5><div class="chart-box"><canvas id="subjectChart"></canvas></div>
+  </div></div></div>
+  <div class="col-md-6"><div class="card h-100"><div class="card-body p-4">
+    <h5 class="fw-bold mb-3">Completed vs Pending Tasks</h5><div class="chart-box"><canvas id="taskChart"></canvas></div>
+  </div></div></div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>window.CHART_DATA = {{ chart|tojson }};</script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

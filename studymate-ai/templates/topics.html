@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Topics – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">Topics</h2>
+{% if not subjects %}
+<div class="empty-state">Add a subject first, then add its topics. <a href="{{ url_for('subjects') }}">Go to Subjects</a></div>
+{% else %}
+<div class="card mb-4"><div class="card-body p-4">
+  <form method="post" action="{{ url_for('topics_add') }}" class="row g-3 align-items-end">
+    <div class="col-md-3"><label class="form-label">Select Subject</label>
+      <select name="subject_id" class="form-select" required>
+        {% for s in subjects %}<option value="{{ s._id }}" {{ 'selected' if selected == s._id|string }}>{{ s.name }}</option>{% endfor %}
+      </select></div>
+    <div class="col-md-3"><label class="form-label">Topic Name</label><input name="name" class="form-control" placeholder="e.g. Normalization" required maxlength="100"></div>
+    <div class="col-6 col-md-2"><label class="form-label">Difficulty</label>
+      <select name="difficulty" id="difficulty" class="form-select"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+    <div class="col-6 col-md-2"><label class="form-label">Study Time (min)</label><input name="estimated_minutes" id="minutes" type="number" min="10" max="240" step="5" value="45" class="form-control"></div>
+    <div class="col-md-2"><label class="form-label">Status</label>
+      <select name="status" class="form-select"><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+    <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+      <button class="btn btn-brand">Add Topic</button>
+    </div>
+  </form>
+</div></div>
+
+<div class="mb-3 d-flex flex-wrap gap-2">
+  <a class="btn btn-sm {{ 'btn-brand' if not selected else 'btn-outline-brand' }}" href="{{ url_for('topics') }}">All subjects</a>
+  {% for s in subjects %}<a class="btn btn-sm {{ 'btn-brand' if selected == s._id|string else 'btn-outline-brand' }}" href="{{ url_for('topics', subject=s._id) }}">{{ s.name }}</a>{% endfor %}
+</div>
+
+{% for g in groups %}
+<div class="card mb-3"><div class="card-body p-4">
+  <h5 class="fw-bold mb-3"><i class="fa-solid fa-folder-open text-brand"></i> {{ g.subject.name }} <span class="text-secondary fs-6">({{ g.topics|length }})</span></h5>
+  <div class="topic-tree">
+  {% for t in g.topics %}
+    <div class="topic-row">
+      <div class="flex-grow-1">
+        <div class="fw-semibold">{{ t.name }}</div>
+        <div class="small text-secondary">{{ t.difficulty }} · {{ t.estimated_minutes }} min</div>
+      </div>
+      <div>{{ t.status|status_badge }}</div>
+      <div class="d-flex gap-1">
+        {% if t.status != 'Completed' %}
+        <form method="post" action="{{ url_for('topics_complete', id=t._id) }}"><button class="btn btn-sm btn-outline-success" title="Mark complete"><i class="fa-solid fa-check"></i></button></form>
+        {% endif %}
+        <button class="btn btn-sm btn-outline-secondary" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal"
+          data-action="{{ url_for('topics_edit', id=t._id) }}" data-name="{{ t.name }}" data-difficulty="{{ t.difficulty }}"
+          data-estimated_minutes="{{ t.estimated_minutes }}" data-status="{{ t.status }}"><i class="fa-solid fa-pen"></i></button>
+        <form method="post" action="{{ url_for('topics_delete', id=t._id) }}" data-confirm="Delete this topic?"><button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fa-solid fa-trash"></i></button></form>
+      </div>
+    </div>
+  {% else %}
+    <div class="text-secondary">No topics yet for this subject.</div>
+  {% endfor %}
+  </div>
+</div></div>
+{% endfor %}
+
+<div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><form method="post" class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">Edit Topic</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="mb-3"><label class="form-label">Topic Name</label><input name="name" class="form-control" required></div>
+    <div class="row g-3">
+      <div class="col-md-4"><label class="form-label">Difficulty</label><select name="difficulty" class="form-select"><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+      <div class="col-md-4"><label class="form-label">Minutes</label><input name="estimated_minutes" type="number" min="10" max="240" class="form-control"></div>
+      <div class="col-md-4"><label class="form-label">Status</label><select name="status" class="form-select"><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-brand">Save changes</button></div>
+</form></div></div>
+{% endif %}
+{% endblock %}

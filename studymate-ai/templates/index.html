@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}StudyMate AI – Plan Smart. Study Better. Achieve More.{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <h1 class="hero-title">Plan Smart. Study Better. Achieve More.</h1>
+        <p class="lead text-secondary my-4">StudyMate AI creates personalized study plans based on your subjects, exams, difficulty levels and available study time.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{{ url_for('planner' if session.get('user_id') else 'register') }}" class="btn btn-brand btn-lg px-4">Create Study Plan</a>
+          <a href="{{ url_for('register') }}" class="btn btn-outline-brand btn-lg px-4">Get Started</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <!-- Illustration: a student desk with a live-looking study plan -->
+        <div class="hero-art">
+          <svg viewBox="0 0 420 300" class="w-100" role="img" aria-label="Student desk with laptop and books">
+            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#4f6df5"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+            <rect x="20" y="250" width="380" height="12" rx="6" fill="#d9defa"/>
+            <rect x="90" y="120" width="190" height="120" rx="10" fill="#1f2a5c"/>
+            <rect x="100" y="130" width="170" height="100" rx="6" fill="url(#g)"/>
+            <rect x="112" y="144" width="70" height="8" rx="4" fill="#fff" opacity=".9"/>
+            <rect x="112" y="162" width="130" height="8" rx="4" fill="#fff" opacity=".55"/>
+            <rect x="112" y="180" width="105" height="8" rx="4" fill="#fff" opacity=".55"/>
+            <rect x="112" y="198" width="120" height="8" rx="4" fill="#fff" opacity=".55"/>
+            <rect x="70" y="240" width="230" height="10" rx="5" fill="#33407a"/>
+            <rect x="310" y="196" width="80" height="16" rx="3" fill="#7c4dff"/>
+            <rect x="316" y="214" width="72" height="16" rx="3" fill="#4f6df5"/>
+            <rect x="306" y="232" width="84" height="18" rx="3" fill="#a78bfa"/>
+            <circle cx="350" cy="150" r="34" fill="#fff" stroke="#4f6df5" stroke-width="6"/>
+            <path d="M350 130v20l14 8" stroke="#7c4dff" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <circle cx="52" cy="206" r="22" fill="#c7d2fe"/><rect x="46" y="222" width="12" height="28" fill="#6366f1"/>
+          </svg>
+          <div class="float-chip chip-a"><span class="dot bg-danger"></span> DBMS – Normalization <b>High</b></div>
+          <div class="float-chip chip-b"><span class="dot bg-warning"></span> Networks – TCP/IP <b>Medium</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Everything you need to prepare for exams</h2>
+    <div class="row g-4">
+      {% for icon, title, text in [
+        ('🤖','Smart Study Planning','Ranks every topic by exam urgency, difficulty and progress.'),
+        ('📅','Personalized Schedule','Fits topics into your daily hours and preferred study time.'),
+        ('📊','Progress Tracking','See completion by subject and your weekly study hours.'),
+        ('⏱️','Pomodoro Focus Timer','25-minute focus sessions with automatic short breaks.')] %}
+      <div class="col-sm-6 col-lg-3">
+        <div class="card feature-card h-100"><div class="card-body p-4">
+          <div class="feature-icon">{{ icon }}</div>
+          <h5 class="fw-bold">{{ title }}</h5>
+          <p class="text-secondary mb-0">{{ text }}</p>
+        </div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="how" class="py-5 bg-white">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">How It Works</h2>
+    <ol class="steps">
+      {% for s in ['Add Subjects','Add Topics','Enter Exam Dates','AI Analyzes Your Schedule','Smart Study Plan Generated','Track Your Progress'] %}
+      <li><span class="step-no">{{ loop.index }}</span><span class="step-text">{{ s }}</span></li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container text-center">
+    <h2 class="section-title mb-3">Ready to organise your exam preparation?</h2>
+    <a href="{{ url_for('register') }}" class="btn btn-brand btn-lg px-5">Create your free account</a>
+  </div>
+</section>
+<footer class="py-4 text-center text-secondary small">© {{ 2026 }} StudyMate AI – Final Year Project</footer>
+{% endblock %}

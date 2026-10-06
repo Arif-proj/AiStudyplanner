@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Subjects – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">Subjects</h2>
+<div class="card mb-4"><div class="card-body p-4">
+  <form method="post" action="{{ url_for('subjects_add') }}" class="row g-3 align-items-end">
+    <div class="col-md-4"><label class="form-label">Subject Name</label><input name="name" class="form-control" placeholder="e.g. DBMS" required maxlength="100"></div>
+    <div class="col-md-3"><label class="form-label">Exam Date</label><input name="exam_date" type="date" class="form-control" required></div>
+    <div class="col-md-3"><label class="form-label">Subject Difficulty</label>
+      <select name="difficulty" class="form-select"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
+    <div class="col-md-2 d-grid"><button class="btn btn-brand">Add Subject</button></div>
+  </form>
+</div></div>
+
+<div class="row g-4">
+  {% for s in subjects %}
+  <div class="col-md-6 col-xl-4">
+    <div class="card subject-card h-100"><div class="card-body p-4">
+      <div class="d-flex justify-content-between align-items-start">
+        <h5 class="fw-bold">{{ s.name }}</h5>
+        <span class="badge rounded-pill text-bg-light border">{{ s.difficulty }}</span>
+      </div>
+      <p class="mb-1 text-secondary"><i class="fa-regular fa-calendar"></i> {{ s.exam_date|nicedate }}</p>
+      <p class="mb-3 fw-semibold {{ 'text-danger' if s.days_left is not none and 0 <= s.days_left <= 7 }}">
+        {% if s.days_left is none %}—{% elif s.days_left < 0 %}Exam finished{% elif s.days_left == 0 %}Exam today!{% else %}{{ s.days_left }} day{{ 's' if s.days_left != 1 }} remaining{% endif %}
+      </p>
+      <div class="d-flex justify-content-between small text-secondary mb-1"><span>{{ s.done }}/{{ s.total }} topics</span><span>{{ s.percent }}%</span></div>
+      <div class="progress mb-3"><div class="progress-bar" style="width: {{ s.percent }}%"></div></div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-brand" href="{{ url_for('topics', subject=s._id) }}">Topics</a>
+        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editModal"
+          data-action="{{ url_for('subjects_edit', id=s._id) }}" data-name="{{ s.name }}" data-exam_date="{{ s.exam_date }}" data-difficulty="{{ s.difficulty }}">Edit</button>
+        <form method="post" action="{{ url_for('subjects_delete', id=s._id) }}" data-confirm="Delete this subject and all its topics?">
+          <button class="btn btn-sm btn-outline-danger">Delete</button></form>
+      </div>
+    </div></div>
+  </div>
+  {% else %}
+  <div class="col-12"><div class="empty-state">No subjects yet. Add your first subject above.</div></div>
+  {% endfor %}
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><form method="post" class="modal-content">
+  <div class="modal-header"><h5 class="modal-title">Edit Subject</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="mb-3"><label class="form-label">Subject Name</label><input name="name" class="form-control" required></div>
+    <div class="mb-3"><label class="form-label">Exam Date</label><input name="exam_date" type="date" class="form-control" required></div>
+    <div><label class="form-label">Subject Difficulty</label><select name="difficulty" class="form-select"><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-brand">Save changes</button></div>
+</form></div></div>
+{% endblock %}

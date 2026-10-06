@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}My Tasks – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">My Tasks</h2>
+<div class="card"><div class="card-body p-0">
+  <div class="table-responsive">
+  <table class="table align-middle mb-0 task-table">
+    <thead><tr><th>Date</th><th>Time</th><th>Subject</th><th>Topic</th><th>Duration</th><th>Priority</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+    <tbody>
+    {% for t in tasks %}
+    <tr class="{{ 'table-light text-secondary' if t.status == 'Completed' }}">
+      <td class="text-nowrap">{{ t.study_date|nicedate }}{% if t.study_date == today %} <span class="badge text-bg-primary">Today</span>{% endif %}</td>
+      <td class="text-nowrap">{{ t.start_time|t12 }} – {{ t.end_time|t12 }}</td>
+      <td>{{ t.subject_name }}</td><td>{{ t.topic_name }}</td>
+      <td>{{ t.duration }} min</td>
+      <td>{{ t.priority|priority_badge }}</td>
+      <td>{{ t.status|status_badge }}</td>
+      <td class="text-end text-nowrap">
+        {% if t.status != 'Completed' %}
+        <form class="d-inline" method="post" action="{{ url_for('tasks_complete', id=t._id) }}"><button class="btn btn-sm btn-outline-success" title="Complete"><i class="fa-solid fa-check"></i></button></form>
+        {% endif %}
+        <button class="btn btn-sm btn-outline-secondary" title="Edit" data-bs-toggle="modal" data-bs-target="#editModal"
+          data-action="{{ url_for('tasks_update', id=t._id) }}" data-duration="{{ t.duration }}" data-priority="{{ t.priority }}"
+          data-study_date="" data-start_time="" data-mode="edit"><i class="fa-solid fa-pen"></i></button>
+        <button class="btn btn-sm btn-outline-primary" title="Reschedule" data-bs-toggle="modal" data-bs-target="#editModal"
+          data-action="{{ url_for('tasks_update', id=t._id) }}" data-duration="" data-priority="" data-study_date="{{ t.study_date }}" data-start_time="{{ t.start_time }}" data-mode="reschedule"><i class="fa-regular fa-calendar"></i></button>
+        <form class="d-inline" method="post" action="{{ url_for('tasks_delete', id=t._id) }}" data-confirm="Delete this task?"><button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fa-solid fa-trash"></i></button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8"><div class="empty-state m-3">No tasks yet. <a href="{{ url_for('planner') }}">Generate your study plan</a>.</div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div></div>
+
+<div class="modal fade" id="editModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><form method="post" class="modal-content">
+  <div class="modal-header"><h5 class="modal-title" id="taskModalTitle">Edit Task</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body">
+    <div class="row g-3" id="grpEdit">
+      <div class="col-6"><label class="form-label">Duration (min)</label><input name="duration" type="number" min="10" max="240" step="5" class="form-control"></div>
+      <div class="col-6"><label class="form-label">Priority</label><select name="priority" class="form-select"><option>High</option><option>Medium</option><option>Low</option></select></div>
+    </div>
+    <div class="row g-3" id="grpResched">
+      <div class="col-6"><label class="form-label">New Date</label><input name="study_date" type="date" class="form-control"></div>
+      <div class="col-6"><label class="form-label">New Start Time</label><input name="start_time" type="time" class="form-control"></div>
+    </div>
+  </div>
+  <div class="modal-footer"><button class="btn btn-brand">Save changes</button></div>
+</form></div></div>
+{% endblock %}

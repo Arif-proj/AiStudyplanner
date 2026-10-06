@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Pomodoro – StudyMate AI{% endblock %}
+{% block content %}
+<h2 class="page-title">Pomodoro Focus Timer</h2>
+<div class="row justify-content-center"><div class="col-lg-6">
+  <div class="card text-center"><div class="card-body p-4 p-md-5">
+    <div class="btn-group mb-4" role="group">
+      <button class="btn btn-brand" id="studyMode">Study Mode</button>
+      <button class="btn btn-outline-brand" id="breakMode">Break Mode</button>
+    </div>
+    <div class="timer-face" id="timerFace"><span id="timerText">25:00</span><small id="modeLabel">Focus</small></div>
+    <div class="d-flex justify-content-center gap-2 my-4">
+      <button class="btn btn-brand px-4" id="startBtn"><i class="fa-solid fa-play"></i> Start</button>
+      <button class="btn btn-outline-secondary px-4" id="pauseBtn"><i class="fa-solid fa-pause"></i> Pause</button>
+      <button class="btn btn-outline-secondary px-4" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+    <div class="text-start">
+      <label class="form-label">Studying (optional)</label>
+      <select id="topicSelect" class="form-select">
+        <option value="">— no specific topic —</option>
+        {% for t in topics %}<option value="{{ t._id }}" {{ 'selected' if selected == t._id|string }}>{{ t.subject_name }} – {{ t.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div id="timerMsg" class="alert alert-success mt-4 d-none mb-0"></div>
+  </div></div>
+</div></div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/pomodoro.js') }}"></script>{% endblock %}

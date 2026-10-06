@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}
+Register – StudyMate AI
+{% endblock %}
+
+{% block content %}
+
+<div class="auth-wrap">
+
+    <div class="card auth-card">
+
+        <div class="card-body p-4 p-md-5">
+
+            <h3 class="fw-bold mb-1">
+                Create your account
+            </h3>
+
+            <p class="text-secondary mb-4">
+                Start planning your exams in a minute.
+            </p>
+
+            <form method="post" novalidate>
+
+                <!-- Full Name -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Full Name
+                    </label>
+
+                    <input
+                        name="name"
+                        class="form-control"
+                        required
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <!-- Email -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Email
+                    </label>
+
+                    <input
+                        name="email"
+                        type="email"
+                        class="form-control"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Password
+                    </label>
+
+                    <input
+                        name="password"
+                        type="password"
+                        class="form-control"
+                        minlength="6"
+                        required
+                    >
+
+                    <div class="form-text">
+                        At least 6 characters.
+                    </div>
+
+                </div>
+
+
+                <!-- College -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        College Name
+                    </label>
+
+                    <input
+                        name="college"
+                        class="form-control"
+                        required
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="btn btn-brand w-100"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+
+            <p class="text-center text-secondary mt-4 mb-0">
+
+                Already registered?
+
+                <a href="{{ url_for('login') }}">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
